@@ -1,10 +1,11 @@
-import express  from 'express';
-import bodyParser from 'body-parser';
+const express = require('express');
+const routes = require('./routes');
 
 const app = express();
-app.use(bodyParser.json());
 const port = 3000;
+
+routes(app);
 
 app.listen(port, () => console.log("SERVER IS RUNNING.."))
 
-export default app;
+module.exports = app
