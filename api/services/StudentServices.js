@@ -3,8 +3,18 @@ const Errors = require('../errors/Exception/requestException/index');
 
 class StudentServices {
 
-    async index() {
+    //GET  - TODOS OS REGISTROS DE ESTUDANTES ATIVAS
+    async indexActive() {
         const students = await db.Students.findAll();
+        if(!students) 
+            throw Errors.NotFoundException('Students not found')
+
+        return students
+    }
+
+    //GET - TODOS OS REGISTROS GERAIS
+    async index() {
+        const students = await db.Students.scope('all').findAll();
         if(!students) 
             throw Errors.NotFoundException('Students not found')
 
@@ -24,6 +34,39 @@ class StudentServices {
     async store(student) {
         const newStudent = await db.Students.create(student)
         return newStudent;
+    }
+
+    async delete(id) {
+        const student = await db.Students.findByPk(id)
+        if(!student)
+            throw Errors.NotFoundException('Student not found')
+
+        await db.Students.destroy({
+            where: {
+                id: Number(id)
+            }
+        })
+
+        return
+    }
+
+    async restore (id) {
+        await db.Students.restore( {
+            Where: {
+                id: Number(id)
+            }
+        })
+
+        return
+    }
+
+    async enrollments (studentID) {
+        const student = await db.Students.findByPk(studentID)
+        if(!student)
+            throw Errors.NotFoundException('Student not found')
+            
+        const enrollment = await Students.getEnrollments();
+        return enrollment;
     }
     
     async register(studentID, enrollmentID) {
