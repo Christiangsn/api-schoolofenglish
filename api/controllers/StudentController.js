@@ -16,7 +16,7 @@ class StudentController {
     }
 
     static async show (req, res) {
-            const { id } = req.params
+        const { id } = req.params
 
         try {
             const students = new studentsServices();
@@ -55,11 +55,14 @@ class StudentController {
 
     static async enrollment (req, res) {
         const { studentID } = req.params
-        const register = { ...req.body, student_id: Number(studentID) }
+        const register = { ...req.body, student_id: studentID }
+        const { class_id } = req.body
+
+        console.log(register)
         
         try {
             const students = new studentsServices();
-            const newRegister = await students.enrollment(register);
+            const newRegister = await students.enrollment(register, studentID, class_id);
             return res.json(newRegister)
 
         } catch (error) {

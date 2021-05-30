@@ -12,11 +12,8 @@ class StudentServices {
     }
 
     async show(id) {
-        const student = await db.Students.findOne( {
-            Where: {
-                id: Number(id)
-            }
-        })
+        console.log(id)
+        const student = await db.Students.findByPk(id)
 
         if(!student)
             throw Errors.NotFoundException('Student not found')
@@ -44,7 +41,18 @@ class StudentServices {
         return register
     }
 
-    async enrollment (register) {
+    async enrollment (register, studentID, class_id) {
+
+        console.log(register)
+
+        const student = await db.Students.findByPk(studentID)
+        if(!student)
+            throw Errors.NotFoundException('Student not found')
+
+        const searchClass = await db.Classes.findByPk(class_id)
+        if(!searchClass)
+            throw Errors.NotFoundException('Class not found')
+
         const newRegister = await db.Enrollment.create(register)
         return newRegister
     }
