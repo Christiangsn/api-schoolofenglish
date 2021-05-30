@@ -24,7 +24,12 @@ class StudentServices {
         return student
     }
 
-    
+    async store(student) {
+        const newStudent = await db.Students.create(student)
+        return newStudent;
+    }
+
+
 
 
 }

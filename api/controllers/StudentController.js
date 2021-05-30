@@ -32,9 +32,11 @@ class StudentController {
         const newStudent = req.body
 
         try {
-            
+            const students = new studentsServices();
+            const student = await students.store(newStudent);
+            return res.json(student)
         } catch (error) {
-            
+            return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
     }
 
