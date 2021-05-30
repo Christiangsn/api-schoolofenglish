@@ -7,5 +7,6 @@ router.get('/students', studentController.index);
 router.get('/student/:id', studentController.show);
 router.post('/student', studentController.store);
 
+router.get('/students/:studentID/enrollments/:enrollmentID', studentController.register)
 
 module.exports = router;

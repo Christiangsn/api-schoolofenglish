@@ -28,6 +28,28 @@ class StudentServices {
         const newStudent = await db.Students.create(student)
         return newStudent;
     }
+    
+    async register(studentID, enrollmentID) {
+        
+        const register = await db.Enrollment.findOne( {
+            Where: {
+                id: Number(enrollmentID),
+                studentID: Number(studentID)
+            }
+        })
+
+        if(!register)
+            throw Errors.NotFoundException('Register not found')
+        
+        return register
+    }
+
+    async enrollment (register) {
+        const newRegister = await db.Enrollment.create(register)
+        return newRegister
+    }
+
+
 
 
 
