@@ -5,9 +5,13 @@ const Op = Sequelize.Op;
 
 class StudentServices {
 
+    constructor(modelStudents) {
+        this.modelStudents = modelStudents;
+    }
+
     //GET  - TODOS OS REGISTROS DE ESTUDANTES ATIVAS
     async indexActive() {
-        const students = await db.Students.findAll();
+        const students = await db[this.modelStudents].findAll();
         if(!students) 
             throw Errors.NotFoundException('Students not found')
 
@@ -110,6 +114,35 @@ class StudentServices {
             order: [ ['student_id', 'DESC'] ]
         })
         return studentsByClass;
+    }
+
+    async disable (studentID) {
+
+        //Transação
+        db.sequelize.transaction(async transf => {
+            await db.Students.update({
+                active: false
+            }, { 
+                where: {
+                    id: studentID
+                }
+            }, { 
+                transaction: transf
+            })
+            await db.Enrollment.update( {
+                status: 'Cancelado'
+            }, {
+                where: {
+                    student_id: studentID
+                }
+            }, { 
+                transaction: transf
+            })
+        })
+
+
+
+        return     
     }
 
 

@@ -1,12 +1,13 @@
 const studentsServices = require('../services/StudentServices');
 const Errors = require('../errors/Exception/requestException/index');
 
+const students = new studentsServices('Students'); 
+
 class StudentController {
 
     static async indexActive (req, res) {
 
         try {
-            const students = new studentsServices();
             const allStudents = await students.indexActive();
             return res.json(allStudents)
 
@@ -132,6 +133,18 @@ class StudentController {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
 
+    }
+
+    static async disable (req, res) {
+        const { studentID } = req.params
+
+        try {
+            const students = new studentsServices();
+            const disable = await students.disable(studentID);
+            return res.json({ message: `Matricula referênte ao estudante ${studentID} desativada com Sucesso!`})
+        } catch (error) {
+            return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}}) 
+        }
     }
 
 

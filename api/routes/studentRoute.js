@@ -10,6 +10,7 @@ router.get('/student/:id', studentController.show);
 router.get('/students/enrollment/:classID/confirmed', studentController.enrollmentsByClass);
 router.post('/students', studentController.store);
 router.post('/students/:id/restore', studentController.restore);
+router.post('/students/:studentID/disable', studentController.disable);
 router.delete('/students/:id', studentController.delete)
 
 router.get('/students/:studentID/enrollments/:enrollmentID', studentController.register);
