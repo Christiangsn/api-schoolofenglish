@@ -3,9 +3,9 @@ const Errors = require('../errors/Exception/requestException/index');
 
 class ClassServices {
 
-    async index() {
-        const classes = await db.Classes.findAll();
-        if(!classes) 
+    async index(where) {
+        const classes = await db.Classes.findAll( { where });
+        if(!classes  || classes.length == 0) 
             throw Errors.NotFoundException('Class not found')
 
         return classes

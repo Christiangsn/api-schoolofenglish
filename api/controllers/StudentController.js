@@ -119,6 +119,22 @@ class StudentController {
         }
     }
 
+    //CONTANDO QUANTOS ALUNOS TEM MATRICULADOS NAQUELA CLASSE
+    static async enrollmentsByClass (req, res) {
+        const { classID } = req.params
+
+        try {
+            const students = new studentsServices();
+            const studentsByClass = await students.enrollmentsByClass(classID);
+            return res.json(studentsByClass);
+
+        } catch (error) {
+            return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
+        }
+
+
+    }
+
 
 }
 

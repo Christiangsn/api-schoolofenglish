@@ -1,5 +1,7 @@
 const db = require('../models');
 const Errors = require('../errors/Exception/requestException/index');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 class StudentServices {
 
@@ -60,17 +62,17 @@ class StudentServices {
         return
     }
 
+    //VER TURMA A QUAL ESTÁ MATRICULADO O ESTUDANTE
     async enrollments (studentID) {
         const student = await db.Students.findByPk(studentID)
         if(!student)
             throw Errors.NotFoundException('Student not found')
             
-        const enrollment = await Students.getEnrollments();
+        const enrollment = await student.getEnrollmedClasses();
         return enrollment;
     }
     
     async register(studentID, enrollmentID) {
-        
         const register = await db.Enrollment.findOne( {
             Where: {
                 id: Number(enrollmentID),
@@ -100,10 +102,20 @@ class StudentServices {
         return newRegister
     }
 
+    async enrollmentsByClass (class_id) {
+            
+        const studentsByClass = await db.Enrollment.findAndCountAll({
+            where: {
+                class_id: Number( class_id),
+                status: 'Confirmado'
+            },
+            limit: 10,
+            order: [ ['student_id', 'DESC'] ]
+        })
 
-
-
-
+        console.log(studentsByClass)
+        return studentsByClass;
+    }
 
 }
 

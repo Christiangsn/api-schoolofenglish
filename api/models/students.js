@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
        Students.hasMany(models.Enrollment, {
           foreignKey: 'student_id',
           scope: { status: 'Confirmado' },
-          as: 'Enrollments'
+          //ESCOPO DE FILTRO
+          as: 'EnrollmedClasses'
        })
     }
   };
