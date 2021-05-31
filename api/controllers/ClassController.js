@@ -24,6 +24,23 @@ class ClassController {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
     }
+   
+    //CONSULTAR LOTAÇÕES DE UMA SALA
+    static async capacity (req, res) {
+        const limitStudents = 2
+
+        try {
+            const classes = new ClassesServices();
+            const studentsByClass = await classes.capacity(limitStudents);
+            return res.json(studentsByClass)
+            
+        } catch (error) {
+            return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
+
+        }
+  
+    }
+
 }
 
 module.exports = ClassController;

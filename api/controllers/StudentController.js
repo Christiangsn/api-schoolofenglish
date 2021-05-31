@@ -132,8 +132,8 @@ class StudentController {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
 
-
     }
+
 
 
 }

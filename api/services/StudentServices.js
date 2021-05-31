@@ -87,9 +87,6 @@ class StudentServices {
     }
 
     async enrollment (register, studentID, class_id) {
-
-        console.log(register)
-
         const student = await db.Students.findByPk(studentID)
         if(!student)
             throw Errors.NotFoundException('Student not found')
@@ -112,10 +109,9 @@ class StudentServices {
             limit: 10,
             order: [ ['student_id', 'DESC'] ]
         })
-
-        console.log(studentsByClass)
         return studentsByClass;
     }
+
 
 }
 
