@@ -1,80 +1,61 @@
 const db = require('../models');
 const Errors = require('../errors/Exception/requestException/index');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const Services = require('./Services')
 
-class StudentServices {
+class StudentServices extends Services {
 
-    constructor(modelStudents) {
-        this.modelStudents = modelStudents;
+    constructor () {
+        super('Students')
+        this.enrollments = new Services('Enrollment')
     }
 
-    //GET  - TODOS OS REGISTROS DE ESTUDANTES ATIVAS
-    async indexActive() {
-        const students = await db[this.modelStudents].findAll();
-        if(!students) 
-            throw Errors.NotFoundException('Students not found')
-
-        return students
-    }
-
-    //GET - TODOS OS REGISTROS GERAIS
-    async index() {
-        const students = await db.Students.scope('all').findAll();
-        if(!students) 
-            throw Errors.NotFoundException('Students not found')
-
-        return students
-    }
-
-    async show(id) {
-        console.log(id)
-        const student = await db.Students.findByPk(id)
-
-        if(!student)
-            throw Errors.NotFoundException('Student not found')
-
-        return student
-    }
-
-    async store(student) {
-        const newStudent = await db.Students.create(student)
-        return newStudent;
-    }
-
-    async delete(id) {
-        const student = await db.Students.findByPk(id)
-        if(!student)
-            throw Errors.NotFoundException('Student not found')
-
-        await db.Students.destroy({
-            where: {
-                id: Number(id)
-            }
+    async disable (studentID) {
+        //Transação
+        db.sequelize.transaction(async transf => {
+            await db[this.modelStudents].update( { active: false }, { where: { id: studentID }
+            }, { transaction: transf })
+            await db.Enrollment.update( { status: 'Cancelado' }, { where: { student_id: studentID }
+            }, { transaction: transf })
         })
-
-        return
+        return     
     }
 
-    async restore (id) {
-        await db.Students.restore( {
-            Where: {
-                id: Number(id)
-            }
-        })
-
-        return
-    }
-
-    //VER TURMA A QUAL ESTÁ MATRICULADO O ESTUDANTE
     async enrollments (studentID) {
-        const student = await db.Students.findByPk(studentID)
+        const student = await db[this.nameModel].findByPk(studentID)
         if(!student)
             throw Errors.NotFoundException('Student not found')
             
         const enrollment = await student.getEnrollmedClasses();
         return enrollment;
     }
+
+
+
+
+
+
+
+    //GET - TODOS OS REGISTROS GERAIS ATIVOS
+    async indexActive (where = {}) {
+        const students = await db[this.model].findAll( { where: { ...where } } );
+        if(!students) 
+            throw Errors.NotFoundException('Students not found')
+        return students
+    }
+
+    //TODOS OS REGISTROS GERAIS
+    async index( where = {} ) {
+        const students = await db[this.model].findAll( ( where = {} ) );
+        if(!students) 
+            throw Errors.NotFoundException('Students not found')
+        return students
+    }
+
+
+
+
+    //VER TURMA A QUAL ESTÁ MATRICULADO O ESTUDANTE
+
     
     async register(studentID, enrollmentID) {
         const register = await db.Enrollment.findOne( {
@@ -91,7 +72,7 @@ class StudentServices {
     }
 
     async enrollment (register, studentID, class_id) {
-        const student = await db.Students.findByPk(studentID)
+        const student = await db[this.modelStudents].findByPk(studentID)
         if(!student)
             throw Errors.NotFoundException('Student not found')
 
@@ -116,34 +97,7 @@ class StudentServices {
         return studentsByClass;
     }
 
-    async disable (studentID) {
 
-        //Transação
-        db.sequelize.transaction(async transf => {
-            await db.Students.update({
-                active: false
-            }, { 
-                where: {
-                    id: studentID
-                }
-            }, { 
-                transaction: transf
-            })
-            await db.Enrollment.update( {
-                status: 'Cancelado'
-            }, {
-                where: {
-                    student_id: studentID
-                }
-            }, { 
-                transaction: transf
-            })
-        })
-
-
-
-        return     
-    }
 
 
 }
