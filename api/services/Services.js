@@ -5,6 +5,13 @@ class Services {
     constructor(model) {
         this.model = model
     }
+    //PEGAR TODOS OS REGISTROS
+    async index () {
+        const registers = await db[this.modelName].findAll();
+        if(!register)
+            throw Errors.NotFoundException('register not found')
+        return register
+    }
     // PEGAR APENAS UM REGISTRO
     async show( where = {} ) {
         const register = await db[this.modelName].findOne( { where: { ...where} } )

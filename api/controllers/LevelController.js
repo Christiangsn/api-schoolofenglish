@@ -1,13 +1,12 @@
 const Errors = require('../errors/Exception/requestException/index');
-const levelsServices = require('../services/LevelServices');
+const LevelsServices = require('../services/LevelServices');
+const levelsServices = new LevelsServices();
 
 class LevelController {
 
     static async index (req, res) {
-
         try {
-            const levels = new levelsServices();
-            const allLvls = await levels.index();
+            const allLvls = await levelsServices.show();
             return res.json(allLvls)
 
         } catch (error) {

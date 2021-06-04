@@ -1,16 +1,9 @@
-const db = require('../models');
-const Errors = require('../errors/Exception/requestException/index');
+const Services = require('./Services');
 
-class LevelServices {
-
-    async index() {
-        const levels = await db.Levels.findAll();
-        if(!levels) 
-            throw Errors.NotFoundException('Levels not found')
-
-        return levels
+class LevelsServices extends Services {
+    constructor () {
+        super('Levels')
     }
-
 }
 
-module.exports = LevelServices;
+module.exports = LevelsServices;

@@ -2,6 +2,8 @@ const Errors = require('../errors/Exception/requestException/index');
 const ClassesServices = require('../services/ClassServices');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const classesServices = new ClassesServices(); 
+
 
 class ClassController {
 
@@ -16,29 +18,26 @@ class ClassController {
         final_date ? where.init_date[Op.lte] = final_date : null;
 
         try {
-            const classes = new ClassesServices();
-            const allClasses = await classes.index(where);
+            const allClasses = await classesServices.index(where);
             return res.json(allClasses)
 
         } catch (error) {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
     }
-   
-    //CONSULTAR LOTAÇÕES DE UMA SALA
-    static async capacity (req, res) {
+
+    static async show (req, res) {
         const limitStudents = 2
 
         try {
-            const classes = new ClassesServices();
-            const studentsByClass = await classes.capacity(limitStudents);
+            const studentsByClass = await classesServices.show(limitStudents);
             return res.json(studentsByClass)
             
         } catch (error) {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
 
         }
-  
+
     }
 
 }
