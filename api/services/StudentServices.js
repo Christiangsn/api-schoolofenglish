@@ -20,7 +20,6 @@ class StudentServices extends Services {
         return     
     }
 
-    //GET - TODOS OS REGISTROS GERAIS ATIVOS
     async indexActive (where = {}) {
         const students = await db[this.model].findAll( { where: { ...where } } );
         if(!students) 
@@ -51,9 +50,6 @@ class StudentServices extends Services {
         const enrollment = await student.getEnrollmedClasses();
         return enrollment;
     }
-
-
-
 
 }
 

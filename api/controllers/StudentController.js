@@ -1,12 +1,8 @@
 const { StudentsServices } = require('../services');
-const Sequelize = require('sequelize');
-
 const students = new StudentsServices(); 
 
 class StudentController {
 
-    //ARRUMAR DEPOIS
-    //PEGAR TODOS OS REGISTROS ATIVOS
     static async indexActive (req, res) {
         try {
             const allStudents = await students.indexActive();
@@ -16,8 +12,6 @@ class StudentController {
         }
     }
 
-    //ARRUMAR DEPOIS
-    //PEGAR TODOS OS REGISTROS GERAIS
     static async index (req, res) {
 
         try {
@@ -99,9 +93,6 @@ class StudentController {
         }
 
     }
-
-
-
 
 }
 
