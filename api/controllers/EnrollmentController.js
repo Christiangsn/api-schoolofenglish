@@ -56,8 +56,24 @@ class EnrollmentController {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
     }
+
+    static async showByClass(req, res){
+        const { classID } = req.params
+
+        try {
+            const studentsByClass = await enrollmentsServices.show(  
+                { class_id: Number(classID),  status: 'Confirmado' },
+                { limit: 10,  order: [ ['student_id', 'DESC']]    })
+            return res.json(studentsByClass);
+
+        } catch (error) {
+            return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
+        }
+        
+    }
     
 
 }
 
 module.exports = EnrollmentController;
+

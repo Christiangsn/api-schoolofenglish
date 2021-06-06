@@ -3,17 +3,17 @@ const studentController = require('../controllers/StudentController');
 
 const router = Router();
 
-router.get('/students', studentController.indexActive);
-router.get('/students/all', studentController.index);
-router.get('/students/:studentID/enrollment', studentController.enrollments);
-router.get('/student/:id', studentController.show);
-router.get('/students/enrollment/:classID/confirmed', studentController.enrollmentsByClass);
-router.post('/students', studentController.store);
-router.post('/students/:id/restore', studentController.restore);
-router.post('/students/:studentID/disable', studentController.disable);
-router.delete('/students/:id', studentController.delete)
 
-router.get('/students/:studentID/enrollments/:enrollmentID', studentController.register);
-router.post('/students/:studentID/enrollment', studentController.enrollment);
+router.get('/students', studentController.index);
+router.get('/students/actives', studentController.indexActive);
+router.get('/students/:id', studentController.show);
+router.get('/students/:studentID/enrollment', studentController.showByEnrollment);
+
+router.post('/students/create', studentController.store);
+router.post('/students/restore/:id', studentController.restore);
+
+router.put('/students/edit/:id', studentController.update);
+
+router.delete('/students/desible/:id', studentController.delete);
 
 module.exports = router;

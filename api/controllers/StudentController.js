@@ -5,6 +5,7 @@ const students = new StudentsServices();
 
 class StudentController {
 
+    //ARRUMAR DEPOIS
     //PEGAR TODOS OS REGISTROS ATIVOS
     static async indexActive (req, res) {
         try {
@@ -15,11 +16,12 @@ class StudentController {
         }
     }
 
+    //ARRUMAR DEPOIS
     //PEGAR TODOS OS REGISTROS GERAIS
     static async index (req, res) {
 
         try {
-            const allStudents = await students.index();
+            const allStudents = await students.indexAll();
             return res.json(allStudents)
 
         } catch (error) {
@@ -31,7 +33,7 @@ class StudentController {
         const { id } = req.params
 
         try {
-            const student = await students.show( { id } );
+            const student = await students.show( { id: Number(id) } )
             return res.json(student)
 
         } catch (error) {
@@ -44,19 +46,18 @@ class StudentController {
 
         try {
             const student = await students.store(newStudent);
-            return res.json(student)
+            return res.json('Cadastrado com Sucesso')
         } catch (error) {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
     }
 
     static async update (req, res) {
-        const id = req.params
+        const { id } = req.params
         const infos = req.body
-
         try {
-            const student = await students.update(infos, Number(id));
-            return res.json(student)
+            await students.update(infos, Number(id));
+            return res.json('Editado com Sucesso!!')
         } catch (error) {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
         }
@@ -67,22 +68,11 @@ class StudentController {
         const { id } = req.params
 
         try {
-            await students.delete(id);
-            return res.json({ mensagem: 'record successfully deleted' })
+            await students.delete(Number(id));
+            return res.json({ mensagem: 'Estudante Desativado com Sucesso!!' })
 
         } catch (error) {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
-        }
-    }
-
-    static async disable (req, res) {
-        const { studentID } = req.params
-
-        try {
-            const disable = await students.disable(studentID);
-            return res.json({ message: `Matricula referênte ao estudante ${studentID} desativada com Sucesso!`})
-        } catch (error) {
-            return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}}) 
         }
     }
 
@@ -90,7 +80,7 @@ class StudentController {
         const { id } = req.params 
 
         try {
-            await students.restore(id);     
+            await students.restore(Number(id));     
             return res.json({ messagem: `id: ${id} has been reactivated` })
         } catch (error) {
             return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
@@ -98,43 +88,17 @@ class StudentController {
 
     }
 
-    // static async enrollments (req, res) {
-    //     const { studentID } = req.params
+    static async showByEnrollment (req, res) {
+        const { studentID } = req.params
+        
+        try {
+            const enrollments = await students.indexByEnrollments({ id: Number(studentID)});
+            return res.json(enrollments);      
+        } catch (error) {
+            return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
+        }
 
-    //     try {
-    //         const enrollments = await students.enrollments(studentID);
-    //         return res.json(enrollments)
-    //     } catch (error) {
-    //         return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
-    //     }
-    // }
-    // static async register (req, res) {
-    //     const { studentID, enrollmentID } = req.params
-
-    //     try {
-    //         const register = await students.register(studentID, enrollmentID);
-    //         return res.json(register)
-
-    //     } catch (error) {
-    //         return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
-    //     }
-    // }  
-
-
-    // //CONTANDO QUANTOS ALUNOS TEM MATRICULADOS NAQUELA CLASSE
-    // static async enrollmentsByClass (req, res) {
-    //     const { classID } = req.params
-
-    //     try {
-    //         const studentsByClass = await students.enrollmentsByClass(classID);
-    //         return res.json(studentsByClass);
-
-    //     } catch (error) {
-    //         return res.status(error.status || 400).json({error: {message: error.message || "Ocorreu um erro inesperado", status: error.status || 400}})
-    //     }
-
-    // }
-
+    }
 
 
 

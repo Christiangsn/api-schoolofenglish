@@ -1,4 +1,5 @@
 const db = require('../models');
+const Errors = require('../errors/Exception/requestException/index');
 
 class Services {
 
@@ -6,48 +7,46 @@ class Services {
         this.model = model
     }
     //PEGAR TODOS OS REGISTROS
-    async index () {
-        const registers = await db[this.modelName].findAll();
-        if(!register)
+    async index ( where = {} ) {
+        const registers = await db[this.model].findAll({ where: { ...where } });
+        if(!registers)
             throw Errors.NotFoundException('register not found')
-        return register
+        return registers
     }
     // PEGAR APENAS UM REGISTRO
     async show( where = {} ) {
-        const register = await db[this.modelName].findOne( { where: { ...where} } )
+
+        const register = await db[this.model].findOne({ where: { ...where } })
         if(!register)
             throw Errors.NotFoundException('register not found')
-        return student
+        return register
+        
     }
 
     async store(data) {
-        const register = await db[this.modelStudents].create(data)
-        return register;
+       return await db[this.model].create(data)
     }
 
     async update(info, id, transacao = {} ) {
-        const updateinfos = await db[this.model].update( info, { where: { id: id} }, transacao )
-        return updateinfos;
+        const register = await db[this.model].findByPk(id);
+        if(!register)
+            throw Errors.NotFoundException('register not found')
+
+         return await db[this.model].update( info, 
+            { where: { id: id} }, transacao )
+        
     }
 
     async delete(id) {
-        const student = await db[this.modelStudents].findByPk(id)
-        if(!student)
-            throw Errors.NotFoundException('Student not found')
+        const register = await db[this.model].findByPk(id)
+        if(!register)
+            throw Errors.NotFoundException('Register not found')
 
-        await db[this.modelStudents].destroy({
-            where: {
-                id: Number(id)
-            }
-        })
+        return await db[this.model].destroy( { where: { id: id } } )
 
-        return
     }
 
-    async restore (id) {
-        await db[this.modelStudents].restore( { Where: {  id: Number(id) } })
-        return
-    }
+
 
 }
 
